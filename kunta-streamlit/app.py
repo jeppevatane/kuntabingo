@@ -51,7 +51,7 @@ visited_population_percentage = visited_population / total_population * 100
 # Display the DataFrame in Streamlit
 st.header("Kuntabingo, täyttäkää tänne käydyt kunnat ja mitä siellä teitte!")
 st.write(
-        "Täyttäkää taulukkoon kunnat/kaupungit joissa olette käyneet, ja muistiinpanot-sarakkeeseen voitte kirjoittaa mitä siellä teitte. Käyty kunta = 1, ei käyty kunta = 0."
+        "Täyttäkää taulukkoon kunnat/kaupungit joissa olette käyneet, ja muistiinpanot-sarakkeeseen voitte kirjoittaa mitä siellä teitte. Sarake 'vierailtu' --> Käyty kunta = 1, ei käyty kunta = 0."
         " Tallentakaa muutokset painamalla alla olevaa nappia. Muutokset näkyvät vain nappia painamalla ja sivun päivittämisellä 😅")
 edited_df = st.data_editor(df)
 
@@ -136,7 +136,8 @@ def display_map(dataframe, geojson):
 # Display the unique municipalities visited
 st.header("Statistiikkaa kuntabingosta! 📊👩🏻‍💻")
 st.write("Tässä osiossa voitte tutkailla kartalla kyliä ja kaupunkeja, joissa olette käyneet tai haluatte käydä!"
-         "Voitte myös filtteröidä kartan näyttämään vain käydyt tai käymättömät paikat. ✅❌")
+         " Voitte myös filtteröidä kartan näyttämään vain käydyt tai käymättömät paikat. ✅❌"
+         " Hiiren kanssa 'leijumalla' tietyn kaupungin yllä voitte lukea mahdolliset muistiinpanot reissusta, sekä knoppitiedot kunnasta 🤓)
 
 # Filter to select visited or unvisited
 filter_option = st.selectbox("Kuntafiltteri", ["Kaikki", "Nää mestat me ollaan nähty", "Tänne pitäis mennä vielä"])
