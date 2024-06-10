@@ -137,7 +137,8 @@ def display_map(dataframe, geojson):
 st.header("Statistiikkaa kuntabingosta! 📊👩🏻‍💻")
 st.write("Tässä osiossa voitte tutkailla kartalla kyliä ja kaupunkeja, joissa olette käyneet tai haluatte käydä!"
          " Voitte myös filtteröidä kartan näyttämään vain käydyt tai käymättömät paikat. ✅❌"
-         " Hiiren kanssa 'leijumalla' tietyn kaupungin yllä voitte lukea mahdolliset muistiinpanot reissusta, sekä knoppitiedot kunnasta 🤓)
+         " Hiiren kanssa 'leijumalla' tietyn kaupungin yllä voitte lukea mahdolliset muistiinpanot reissusta, sekä knoppitiedot kunnasta 🤓"
+        )
 
 # Filter to select visited or unvisited
 filter_option = st.selectbox("Kuntafiltteri", ["Kaikki", "Nää mestat me ollaan nähty", "Tänne pitäis mennä vielä"])
