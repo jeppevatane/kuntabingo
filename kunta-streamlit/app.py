@@ -52,7 +52,9 @@ visited_population_percentage = visited_population / total_population * 100
 st.header("Kuntabingo, täyttäkää tänne käydyt kunnat ja mitä siellä teitte!")
 st.write(
         "Täyttäkää taulukkoon kunnat/kaupungit joissa olette käyneet, ja muistiinpanot-sarakkeeseen voitte kirjoittaa mitä siellä teitte. Sarake 'vierailtu' --> Käyty kunta = 1, ei käyty kunta = 0."
-        " Tallentakaa muutokset painamalla alla olevaa nappia. Muutokset näkyvät vain nappia painamalla ja sivun päivittämisellä 😅")
+        " Tallentakaa muutokset painamalla alla olevaa nappia. Muutokset näkyvät vain nappia painamalla ja sivun päivittämisellä 😅"
+        " Ei tarvitse välittää noista muista sarakkeista, ne on karttaa ja muita datanörtteilyjä varten"
+    )
 edited_df = st.data_editor(df)
 
 # Function to update the Google Sheet with the DataFrame
