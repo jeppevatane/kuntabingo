@@ -6,7 +6,7 @@ import plotly.express as px
 import plotly.graph_objects as go
 import re
 import requests
-
+import os, json
 import streamlit as st
 import pandas as pd
 import gspread
@@ -14,8 +14,12 @@ from oauth2client.service_account import ServiceAccountCredentials
 
 # Define the scope and credentials for accessing Google Sheets
 scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
-creds = ServiceAccountCredentials.from_json_keyfile_name('service_acc.json', scope)
-client = gspread.authorize(creds)
+# Read the Google service account credentials from Streamlit secrets
+service_account_info = st.secrets["google_service_account"]
+credentials = ServiceAccountCredentials.from_json_keyfile_dict(service_account_info, scope)
+
+# Authenticate and create the gspread client
+client = gspread.authorize(credentials)
 
 # Open the Google Sheet
 sheet_url = "https://docs.google.com/spreadsheets/d/13upFaGkAkZsu8Kfhjlk8CY5nEGtDkvop8nojoQk9hFQ/edit?usp=sharing"
