@@ -160,7 +160,7 @@ else:
 px_map = display_map(filtered_df, finland_geojson)
 st.plotly_chart(px_map)
 
-fig = subplots.make_subplots(rows=1, cols=2,specs=[[{"type": "pie"}, {"type": "pie"},]])
+fig = subplots.make_subplots(rows=2, cols=1, specs=[[{"type": "pie"}], [{"type": "pie"}]])
 
 fig.add_trace(go.Pie(labels=['', ''],
                      values=[visited_percentage, 100 - visited_percentage],
@@ -169,7 +169,8 @@ fig.add_trace(go.Pie(labels=['', ''],
                      hoverinfo='none',
                      marker_colors=['lightskyblue', 'rgb(240,240,240)'],
                      ),
-              row=1, col=1)
+              row=1, col=1
+              )
 
 fig.add_trace(go.Pie(labels=['', ''],
                      values=[visited_population_percentage, 100 - visited_population_percentage],
@@ -178,16 +179,18 @@ fig.add_trace(go.Pie(labels=['', ''],
                      hoverinfo='none',
                      marker_colors=['lightskyblue', 'rgb(240,240,240)'],
                      ),
-              row=1, col=2)
+              row=2, col=1
+              )
 
-# update
+# Update layout with titles and centered percentage annotations
 fig.update_layout(annotations=[
-    dict(text="%-osuus Suomesta nähty", x=0.24, y=1.1, font_size=15, showarrow=False, xanchor='center'),
-    dict(text="%-osuus koko Suomen väestöstä tavattu", x=0.82, y=1.1, font_size=15, showarrow=False, xanchor='center'),
-    dict(text=str(round(visited_percentage, 2))+"%", x=0.18, y=0.5, font_size=20, showarrow=False),
-    dict(text=str(round(visited_population_percentage,2))+"%", x=0.82, y=0.5, font_size=20, showarrow=False),
+    dict(text="%-osuus Suomesta nähty", x=0.5, y=1.15, font_size=15, showarrow=False, xanchor='center'),
+    dict(text="%-osuus koko Suomen väestöstä tavattu", x=0.5, y=0.5, font_size=15, showarrow=False, xanchor='center'),
+    dict(text=str(round(visited_percentage, 2)) + "%", x=0.5, y=0.85, font_size=20, showarrow=False, xanchor='center'),
+    dict(text=str(round(visited_population_percentage, 2)) + "%", x=0.5, y=0.17, font_size=20, showarrow=False, xanchor='center'),
     ],
-    showlegend=False,)
+    showlegend=False,
+)
 
 
 st.plotly_chart(fig)
