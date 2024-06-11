@@ -4,6 +4,7 @@ import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 import plotly.express as px
 import plotly.graph_objects as go
+import plotly.subplots as subplots
 import re
 import requests
 import os, json
@@ -51,20 +52,22 @@ visited_population_percentage = visited_population / total_population * 100
 # Display the DataFrame in Streamlit
 st.header("Kuntabingo, täyttäkää tänne käydyt kunnat ja mitä siellä teitte!")
 st.write(
-        "Täyttäkää taulukkoon kunnat/kaupungit joissa olette käyneet, ja muistiinpanot-sarakkeeseen voitte kirjoittaa mitä siellä teitte. Sarake 'vierailtu' --> Käyty kunta = 1, ei käyty kunta = 0."
-        " Tallentakaa muutokset painamalla alla olevaa nappia. Muutokset näkyvät vain nappia painamalla ja sivun päivittämisellä 😅"
-        " Ei tarvitse välittää noista muista sarakkeista, ne on karttaa ja muita datanörtteilyjä varten"
+        "Täyttäkää taulukkoon kunnat/kaupungit joissa olette käyneet, ja muistiinpanot-sarakkeeseen voitte kirjoittaa mitä siellä teitte. Jos haluatte merkitä kunnan käydyksi, muuttakaa sarakkeeseen 'vierailtu' =  1. Ei-käydyt kunnat --> 'vierailtu' = 0. "
+        "Tallentakaa muutokset painamalla alla olevaa nappia. Muutokset näkyvät vain nappia painamalla ja sivun päivittämisellä 😅"
     )
-edited_df = st.data_editor(df)
+edited_df = st.data_editor(df[['Kunta', 'Vierailtu', 'Muistiinpanot']])
 
 # Function to update the Google Sheet with the DataFrame
-def update_sheet(updated_df):
+def update_sheet(updated_df, original_df):
+    # Update only the edited columns in the original DataFrame
+    original_df.update(updated_df)
+    # Update the Google Sheet with the modified original DataFrame
     sheet.clear()  # Clear the existing content
-    sheet.update([updated_df.columns.values.tolist()] + updated_df.values.tolist())  # Update with new data
+    sheet.update([original_df.columns.values.tolist()] + original_df.values.tolist())  # Update with new data
 
 # Button to save the edited DataFrame back to Google Sheets
 if st.button("Tallenna muutokset kuntabingon tietokantaan 📝🚀 "):
-    update_sheet(edited_df)
+    update_sheet(edited_df, df)
     st.success("Tietokanta päivitetty onnistuneesti! 🔥")
 
 # Load the GeoJSON file for Finland
@@ -157,23 +160,34 @@ else:
 px_map = display_map(filtered_df, finland_geojson)
 st.plotly_chart(px_map)
 
-fig = px.pie(
-    df,
-    values='Pinta-ala',
-    names='vierailtu_teksti',
-    title='Pinta-alaa katettu matkustelemalla',
-    color='Vierailtu',
-    color_discrete_map={1: 'lightskyblue', 0: 'salmon'}
-    )
+fig = subplots.make_subplots(rows=1, cols=2,specs=[[{"type": "pie"}, {"type": "pie"},]])
 
-st.plotly_chart(fig)
+fig.add_trace(go.Pie(labels=['', ''],
+                     values=[visited_percentage, 100 - visited_percentage],
+                     hole=0.85,
+                     textinfo='none',  # Ensure no text is shown on the pie slices
+                     hoverinfo='none',
+                     marker_colors=['lightskyblue', 'rgb(240,240,240)'],
+                     ),
+              row=1, col=1)
 
-fig = px.pie(
-    df,
-    values='Asukasluku',
-    names='vierailtu_teksti',
-    title='Suomen kansaa tavattu matkustelemalla',
-    color='Vierailtu',
-    color_discrete_map={1: 'lightskyblue', 0: 'salmon'}
-    )
+fig.add_trace(go.Pie(labels=['', ''],
+                     values=[visited_population_percentage, 100 - visited_population_percentage],
+                     hole=0.85,
+                     textinfo='none',  # Ensure no text is shown on the pie slices
+                     hoverinfo='none',
+                     marker_colors=['lightskyblue', 'rgb(240,240,240)'],
+                     ),
+              row=1, col=2)
+
+# update
+fig.update_layout(annotations=[
+    dict(text="%-osuus Suomesta nähty", x=0.24, y=1.1, font_size=15, showarrow=False, xanchor='center'),
+    dict(text="%-osuus koko Suomen väestöstä tavattu", x=0.82, y=1.1, font_size=15, showarrow=False, xanchor='center'),
+    dict(text=str(round(visited_percentage, 2))+"%", x=0.18, y=0.5, font_size=20, showarrow=False),
+    dict(text=str(round(visited_population_percentage,2))+"%", x=0.82, y=0.5, font_size=20, showarrow=False),
+    ],
+    showlegend=False,)
+
+
 st.plotly_chart(fig)
